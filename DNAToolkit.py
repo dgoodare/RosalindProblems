@@ -33,7 +33,7 @@ def reverse_complement(seq):
 
 def gc_content(seq):
     """Calculate the proportion of G and C bases within a DNA/RNA sequence"""
-    return round((seq.count('C') + seq.count('G')) / len(seq) * 100)
+    return round((seq.count('C') + seq.count('G')) / len(seq) * 100, 6)
 
 
 def gc_content_subseq(seq, k=20):
@@ -43,3 +43,23 @@ def gc_content_subseq(seq, k=20):
         subseq = seq[i:i + k]
         result.append(gc_content(subseq))
     return result
+
+
+def translate_seq(seq, init_pos=0):
+    """translate a DNA sequence into an aminoacid sequence"""
+    return [DNA_Codons[seq[pos:pos + 3]] for pos in range(init_pos, len(seq) - 2, 3)]
+
+def codon_usage(seq, aminoAcid):
+    """Provides the frequency of each codon encoding a given codon in a DNA sequence"""
+    tmpList = []
+    for i in range(0, len(seq) - 2, 3):
+        if DNA_Codons[seq[i:i+3]] == aminoAcid:
+            tmpList.append(seq[i:i+3])
+
+    freqDict = dict(collections.Counter(tmpList))
+    total = sum(freqDict.values())
+    
+    for seq in freqDict:
+        freqDict[seq] = round(freqDict[seq] / total, 2)
+    
+    return freqDict
